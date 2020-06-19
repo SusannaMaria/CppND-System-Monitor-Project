@@ -39,13 +39,13 @@ string LinuxParser::OperatingSystem() {
 
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::Kernel() {
-  string os, kernel;
+  string os, version, kernel;
   string line;
   std::ifstream stream(kProcDirectory + kVersionFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
-    linestream >> os >> kernel;
+    linestream >> os >> version >> kernel;
   }
   return kernel;
 }
@@ -94,7 +94,6 @@ float LinuxParser::MemoryUtilization() {
              mapMemCollection["SReclaimable"] + mapMemCollection["Shmem"])) /
            mapMemCollection["MemTotal"];
 
-  cout << result << endl;
   return result;
 }
 
@@ -125,7 +124,31 @@ long LinuxParser::ActiveJiffies() { return 0; }
 long LinuxParser::IdleJiffies() { return 0; }
 
 // TODO: Read and return CPU utilization
-vector<string> LinuxParser::CpuUtilization() { return {}; }
+vector<string> LinuxParser::CpuUtilization() {
+  vector<string> result;
+  
+  // float result;
+  // string type, unit;
+  // float value;
+  string line;
+  std::ifstream stream(kProcDirectory + kStatFilename);
+
+  if (stream.is_open()) {
+    while (std::getline(stream, line)) {
+
+      if (line.rfind("cpu ", 0) == 0) {
+          std::stringstream cpustream(line);
+          std::istream_iterator<std::string> begin(cpustream);
+          std::istream_iterator<std::string> end;
+          std::vector<std::string> vstrings(begin, end);
+          vstrings.erase(vstrings.begin());
+          return vstrings;
+      }
+    }
+  }
+
+  return result;
+}
 
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() { return 0; }
