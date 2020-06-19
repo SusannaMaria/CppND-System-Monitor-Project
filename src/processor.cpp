@@ -11,6 +11,7 @@ using std::stof;
 using std::string;
 using std::to_string;
 using std::unordered_map;
+using LinuxParser::CPUStates;
 
 // TODO: Return the aggregate CPU utilization
 float Processor::Utilization() {
@@ -18,11 +19,11 @@ float Processor::Utilization() {
 
   auto vecstr = LinuxParser::CpuUtilization();
   
-  long Idle = vecstr[enumkeys::idletime] + vecstr[enumkeys::ioWait];
+  long Idle = vecstr[CPUStates::kIdle_] + vecstr[CPUStates::kIOwait_];
 
-  long NonIdle = vecstr[enumkeys::usertime] + vecstr[enumkeys::nicetime] +
-                 vecstr[enumkeys::systemtime] + vecstr[enumkeys::irq] +
-                 vecstr[enumkeys::softIrq] + vecstr[enumkeys::steal];
+  long NonIdle = vecstr[CPUStates::kUser_] + vecstr[CPUStates::kNice_] +
+                 vecstr[CPUStates::kSystem_] + vecstr[CPUStates::kIRQ_] +
+                 vecstr[CPUStates::kSoftIRQ_] + vecstr[CPUStates::kSteal_];
 
   long PrevTotal = PrevIdle + PrevNonIdle;
   long Total = Idle + NonIdle;
