@@ -1,8 +1,8 @@
-#include <string>
-
 #include "format.h"
-#include <sstream>
+
 #include <iomanip>
+#include <sstream>
+#include <string>
 
 using namespace std;
 
@@ -12,32 +12,27 @@ using std::string;
 // INPUT: Long int measuring seconds
 // OUTPUT: HH:MM:SS
 // REMOVE: [[maybe_unused]] once you define the function
-string Format::ElapsedTime(long uptime) { 
+string Format::ElapsedTime(long uptime) {
+  int day = uptime / (24 * 3600);
 
-    int day = uptime / (24 * 3600);  
-    
-    char daysuffix=' ';
-    if (day>1){
-        daysuffix='s';
-    }
-  
-    uptime = uptime % (24 * 3600); 
-    int hour = uptime / 3600;
-  
-    uptime %= 3600; 
-    int minutes = uptime / 60 ; 
-  
-    uptime %= 60; 
-    int seconds = uptime; 
-    
+  uptime = uptime % (24 * 3600);
+  int hour = uptime / 3600;
 
-    std::stringstream ss;
+  uptime %= 3600;
+  int minutes = uptime / 60;
 
-    ss << day << " day";
-    if (day>1){
-        ss << "s";
-    }
+  uptime %= 60;
+  int seconds = uptime;
 
-    ss << ", " << setfill('0') << setw(2) <<hour << ":" << setfill('0') << setw(2) << minutes << ":" << setfill('0') << setw(2) << seconds;
+  std::stringstream ss;
 
-    return ss.str(); }
+  ss << day << " day";
+  if (day > 1) {
+    ss << "s";
+  }
+
+  ss << ", " << setfill('0') << setw(2) << hour << ":" << setfill('0')
+     << setw(2) << minutes << ":" << setfill('0') << setw(2) << seconds;
+
+  return ss.str();
+}
