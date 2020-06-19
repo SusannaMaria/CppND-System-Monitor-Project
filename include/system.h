@@ -18,10 +18,14 @@ class System {
   std::string Kernel();               // TODO: See src/system.cpp
   std::string OperatingSystem();      // TODO: See src/system.cpp
 
+  Process *getProcess(int pid);
+
   // TODO: Define any necessary private members
  private:
   Processor cpu_ = {};
   std::vector<Process> processes_ = {};
+  long prev_total_time;
+  long prev_used_time;
 };
 
 #endif
