@@ -16,6 +16,8 @@ using std::vector;
 // TODO: Return this process's ID
 int Process::Pid() { return pid; }
 
+void Process::User(string uname) { this->user = uname; }
+
 bool Process::IsNew() { return isnew; }
 
 void Process::IsNew(bool isnew) { this->isnew = isnew; }
@@ -30,7 +32,7 @@ string Process::Command() { return string(); }
 string Process::Ram() { return string(); }
 
 // TODO: Return the user (name) that generated this process
-string Process::User() { return string(); }
+string Process::User() { return this->user; }
 
 bool Process::Update() { return this->update; }
 

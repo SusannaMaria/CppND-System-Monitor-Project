@@ -8,8 +8,7 @@ It contains relevant attributes as shown below
 */
 class Process {
  public:
-
-  Process(int pid):pid(pid), isnew(true), update(false) {}
+  Process(int pid) : pid(pid), isnew(true), update(false) {}
   int Pid();                               // TODO: See src/process.cpp
   std::string User();                      // TODO: See src/process.cpp
   std::string Command();                   // TODO: See src/process.cpp
@@ -22,15 +21,15 @@ class Process {
   void CpuUtilization(float cpu_utilization);
   void IsNew(bool isnew);
   bool IsNew();
+  void User(std::string uname);
 
   // TODO: Declare any necessary private members
  private:
- int pid;
- bool isnew;
- bool update;
- float cpu_utilization;
-
- 
+  int pid;
+  bool isnew;
+  bool update;
+  std::string user;
+  float cpu_utilization;
 };
 
 #endif

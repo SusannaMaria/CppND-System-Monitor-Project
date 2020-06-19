@@ -150,6 +150,15 @@ vector<long> LinuxParser::CpuUtilization() {
 
   return result;
 }
+std::vector<std::string> split(const std::string& s, char delimiter) {
+  std::vector<std::string> tokens;
+  std::string token;
+  std::istringstream tokenStream(s);
+  while (std::getline(tokenStream, token, delimiter)) {
+    tokens.push_back(token);
+  }
+  return tokens;
+}
 
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() {
@@ -160,9 +169,9 @@ int LinuxParser::TotalProcesses() {
   if (stream.is_open()) {
     while (std::getline(stream, line)) {
       if (line.rfind("processes ", 0) == 0) {
-      std::istringstream linestream(line);
-      linestream >> type >> numprocesses;        
-      return numprocesses;
+        std::istringstream linestream(line);
+        linestream >> type >> numprocesses;
+        return numprocesses;
       }
     }
   }
@@ -178,9 +187,9 @@ int LinuxParser::RunningProcesses() {
   if (stream.is_open()) {
     while (std::getline(stream, line)) {
       if (line.rfind("procs_running ", 0) == 0) {
-      std::istringstream linestream(line);
-      linestream >> type >> numprocesses;        
-      return numprocesses;
+        std::istringstream linestream(line);
+        linestream >> type >> numprocesses;
+        return numprocesses;
       }
     }
   }
@@ -197,7 +206,27 @@ string LinuxParser::Ram(int pid [[maybe_unused]]) { return string(); }
 
 // TODO: Read and return the user ID associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Uid(int pid [[maybe_unused]]) { return string(); }
+int LinuxParser::Uid(int pid) {
+  string key;
+  string str_uid;
+
+  std::string pidstatusname =
+      kProcDirectory + "/" + to_string(pid) + kStatusFilename;
+  std::ifstream stream(pidstatusname);
+  string line;
+  if (stream.is_open()) {
+    while (std::getline(stream, line)) {
+      if (line.rfind("Uid:", 0) == 0) {
+        std::istringstream linestream(line);
+        linestream >> key >> str_uid;
+
+
+        return stoi(str_uid);
+      }
+    }
+  }
+  return 0;
+}
 
 // TODO: Read and return the user associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
@@ -207,19 +236,41 @@ string LinuxParser::User(int pid [[maybe_unused]]) { return string(); }
 // REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::UpTime(int pid [[maybe_unused]]) { return 0; }
 
-
-vector<string> LinuxParser::PidStat(int pid){
-  std::string pidstatname = kProcDirectory + "/" + to_string(pid) + kStatFilename;
+vector<string> LinuxParser::PidStat(int pid) {
+  std::string pidstatname =
+      kProcDirectory + "/" + to_string(pid) + kStatFilename;
   std::ifstream stream(pidstatname);
   string line;
   if (stream.is_open()) {
     std::getline(stream, line);
-        std::stringstream cpustream(line);
-        std::istream_iterator<std::string> begin(cpustream);
-        std::istream_iterator<std::string> end;
-        std::vector<std::string> vstrings(begin, end);
-        return vstrings;
+    std::stringstream cpustream(line);
+    std::istream_iterator<std::string> begin(cpustream);
+    std::istream_iterator<std::string> end;
+    std::vector<std::string> vstrings(begin, end);
+    return vstrings;
   }
   vector<string> result;
   return result;
+}
+
+void LinuxParser::UserMap(std::unordered_map<int, std::string>& usermap) {
+  // susanna:x:1000:1000:Susanna,,,:/home/susanna:/bin/bash
+  string line;
+  string name;
+  string notneeded;
+  int uid;
+  int gid;
+  string realname;
+  string homepath;
+  string shell;
+  std::ifstream filestream(kPasswordPath);
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      auto linevec = split(line, ':');
+      uid = stoi(linevec[2]);
+      name = linevec[0];
+      usermap[uid] = name;
+       std::cout << uid << "|" << name << std::endl;
+    }
+  }
 }

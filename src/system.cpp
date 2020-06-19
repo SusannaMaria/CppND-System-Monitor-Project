@@ -32,6 +32,11 @@ Process* System::getProcess(int pid) {
     }
   }
   Process newelement = Process(pid);
+  LinuxParser::Uid(pid);
+  const int uid = LinuxParser::Uid(pid);
+  auto uptr = users_.find(uid);
+  string uname = uptr->second;
+  newelement.User(uname.substr(0,6));
   processes_.push_back(newelement);
   return &processes_.back();
 }
@@ -61,7 +66,7 @@ vector<Process>& System::Processes() {
       prc->CpuUtilization(0.0);
     } else {
       float cpu_utilization = ((float)total_time / (float)(used_time * hz));
-    prc->Update(true);
+      prc->Update(true);
       prc->CpuUtilization(cpu_utilization);
     }
   }
@@ -96,3 +101,9 @@ int System::TotalProcesses() { return LinuxParser::TotalProcesses(); }
 
 // TODO: Return the number of seconds since the system started running
 long int System::UpTime() { return LinuxParser::UpTime(); }
+
+System::System() {
+  LinuxParser::UserMap(users_);
+
+  std::cout << "dkfsj" << std::endl;
+}
