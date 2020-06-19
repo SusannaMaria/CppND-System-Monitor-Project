@@ -123,9 +123,12 @@ long LinuxParser::ActiveJiffies() { return 0; }
 // TODO: Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() { return 0; }
 
+
+long op_increase (string i) { return stol(i); }
+
 // TODO: Read and return CPU utilization
-vector<string> LinuxParser::CpuUtilization() {
-  vector<string> result;
+vector<long> LinuxParser::CpuUtilization() {
+  vector<long> result;
   
   // float result;
   // string type, unit;
@@ -142,7 +145,12 @@ vector<string> LinuxParser::CpuUtilization() {
           std::istream_iterator<std::string> end;
           std::vector<std::string> vstrings(begin, end);
           vstrings.erase(vstrings.begin());
-          return vstrings;
+
+    std::transform(vstrings.begin(), vstrings.end(), std::back_inserter(result),
+                   [](string s) -> long { return stol(s); });
+
+
+          return result;
       }
     }
   }

@@ -12,7 +12,7 @@ class Processor {
     long PrevNonIdle;
 
     enum enumkeys { usertime, nicetime, systemtime, idletime, ioWait, irq, softIrq, steal, guest, guestnice };
-    std::vector<const std::string> keys{"usertime","nicetime","systemtime","idletime","ioWait","irq","softIrq","steal","guest","guestnice"};
+    //std::vector<const std::string> keys{"usertime","nicetime","systemtime","idletime","ioWait","irq","softIrq","steal","guest","guestnice"};
 
 
 };

@@ -14,19 +14,15 @@ using std::unordered_map;
 
 // TODO: Return the aggregate CPU utilization
 float Processor::Utilization() {
+
+
   auto vecstr = LinuxParser::CpuUtilization();
-  for (auto i : vecstr) std::cout << i << '|';
+  
+  long Idle = vecstr[enumkeys::idletime] + vecstr[enumkeys::ioWait];
 
-  unordered_map<string, long> CpuValues;
-
-  for (std::vector<string>::size_type i = 0; i != vecstr.size(); i++) {
-    CpuValues[keys[i]] = stol(vecstr[i]);
-  }
-  long Idle = CpuValues["idletime"] + CpuValues["ioWait"];
-
-  long NonIdle = CpuValues["usertime"] + CpuValues["nicetime"] +
-                 CpuValues["systemtime"] + CpuValues["irq"] +
-                 CpuValues["softIrq"] + CpuValues["steal"];
+  long NonIdle = vecstr[enumkeys::usertime] + vecstr[enumkeys::nicetime] +
+                 vecstr[enumkeys::systemtime] + vecstr[enumkeys::irq] +
+                 vecstr[enumkeys::softIrq] + vecstr[enumkeys::steal];
 
   long PrevTotal = PrevIdle + PrevNonIdle;
   long Total = Idle + NonIdle;
