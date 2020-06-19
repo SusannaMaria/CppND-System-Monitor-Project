@@ -1,10 +1,14 @@
+#include "linux_parser.h"
+
 #include <dirent.h>
 #include <unistd.h>
+
+#include <iostream>
 #include <string>
 #include <vector>
 
-#include "linux_parser.h"
-
+using std::cout;
+using std::endl;
 using std::stof;
 using std::string;
 using std::to_string;
@@ -67,10 +71,35 @@ vector<int> LinuxParser::Pids() {
 }
 
 // TODO: Read and return the system memory utilization
-float LinuxParser::MemoryUtilization() { return 0.0; }
+float LinuxParser::MemoryUtilization() {
+  float result;
+  string type, unit;
+  float value;
+  string line;
+  std::ifstream stream(kProcDirectory + kMeminfoFilename);
+
+  std::map<std::string, float> mapMemCollection;
+
+  if (stream.is_open()) {
+    while (std::getline(stream, line)) {
+      std::istringstream linestream(line);
+      linestream >> type >> value >> unit;
+      type = type.substr(0, type.size() - 1);
+      mapMemCollection[type] = value;
+    }
+  }
+  // https://stackoverflow.com/questions/41224738/how-to-calculate-system-memory-usage-from-proc-meminfo-like-htop/41251290#41251290
+  result = (mapMemCollection["MemTotal"] - mapMemCollection["MemFree"] -
+            (mapMemCollection["Buffers"] + mapMemCollection["Cached"] +
+             mapMemCollection["SReclaimable"] + mapMemCollection["Shmem"])) /
+           mapMemCollection["MemTotal"];
+
+  cout << result << endl;
+  return result;
+}
 
 // TODO: Read and return the system uptime
-long LinuxParser::UpTime() {  
+long LinuxParser::UpTime() {
   string suspend, idle;
   string line;
   std::ifstream stream(kProcDirectory + kUptimeFilename);
@@ -87,7 +116,7 @@ long LinuxParser::Jiffies() { return 0; }
 
 // TODO: Read and return the number of active jiffies for a PID
 // REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
+long LinuxParser::ActiveJiffies(int pid [[maybe_unused]]) { return 0; }
 
 // TODO: Read and return the number of active jiffies for the system
 long LinuxParser::ActiveJiffies() { return 0; }
@@ -106,23 +135,20 @@ int LinuxParser::RunningProcesses() { return 0; }
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::Command(int pid [[maybe_unused]]) { return string(); }
 
 // TODO: Read and return the memory used by a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Ram(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::Ram(int pid [[maybe_unused]]) { return string(); }
 
 // TODO: Read and return the user ID associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Uid(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::Uid(int pid [[maybe_unused]]) { return string(); }
 
 // TODO: Read and return the user associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::User(int pid [[maybe_unused]]) { return string(); }
 
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::UpTime(int pid[[maybe_unused]]) { 
-return 0;
-
-}
+long LinuxParser::UpTime(int pid [[maybe_unused]]) { return 0; }
