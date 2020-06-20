@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "linux_parser.h"
+#include "format.h"
 
 using std::string;
 using std::to_string;
@@ -26,10 +27,25 @@ void Process::IsNew(bool isnew) { this->isnew = isnew; }
 float Process::CpuUtilization() { return this->cpu_utilization; }
 
 // TODO: Return the command that generated this process
-string Process::Command() { return string(); }
+string Process::Command() { 
+  if (command.length()==0){
+    this->command = LinuxParser::Command(this->pid);
+    Format::padTo(this->command, 80,'.');
+  }
+  return this->command;
+
+}
 
 // TODO: Return this process's memory utilization
-string Process::Ram() { return string(); }
+string Process::Ram() {
+
+  return this->ram;
+}
+
+
+void Process::SetRam(){
+  this->ram = LinuxParser::Ram(this->pid);
+}
 
 // TODO: Return the user (name) that generated this process
 string Process::User() { return this->user; }
@@ -43,10 +59,13 @@ void Process::CpuUtilization(float cpu_utilization) {
 }
 
 // TODO: Return the age of this process (in seconds)
-long int Process::UpTime() { return 0; }
+long int Process::UpTime() { return utime; }
 
 // TODO: Overload the "less than" comparison operator for Process objects
 // REMOVE: [[maybe_unused]] once you define the function
 bool Process::operator<(Process const& a) const {
   return (this->cpu_utilization > a.cpu_utilization);
+}
+void Process::UpTime(long utime){
+  this->utime = utime;
 }

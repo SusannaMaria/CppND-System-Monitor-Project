@@ -8,6 +8,10 @@ using namespace std;
 
 using std::string;
 
+//     time_t my_time = time(&utime_sec); 
+// char buff[20];
+// strftime(buff, 20, "%H:%M:%S", localtime(&my_time));
+
 // TODO: Complete this helper function
 // INPUT: Long int measuring seconds
 // OUTPUT: HH:MM:SS
@@ -26,13 +30,23 @@ string Format::ElapsedTime(long uptime) {
 
   std::stringstream ss;
 
+  if (day>0){
+
+  
   ss << day << " day";
   if (day > 1) {
     ss << "s";
   }
+  ss << ", ";
+  }
 
-  ss << ", " << setfill('0') << setw(2) << hour << ":" << setfill('0')
+  ss << setfill('0') << setw(2) << hour << ":" << setfill('0')
      << setw(2) << minutes << ":" << setfill('0') << setw(2) << seconds;
 
   return ss.str();
+}
+
+void Format::padTo(std::string &str, const size_t num, const char paddingChar)
+{
+str.resize (num, paddingChar);
 }

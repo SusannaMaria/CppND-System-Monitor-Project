@@ -36,7 +36,7 @@ Process* System::getProcess(int pid) {
   const int uid = LinuxParser::Uid(pid);
   auto uptr = users_.find(uid);
   string uname = uptr->second;
-  newelement.User(uname.substr(0,6));
+  newelement.User(uname.substr(0, 6));
   processes_.push_back(newelement);
   return &processes_.back();
 }
@@ -53,11 +53,27 @@ vector<Process>& System::Processes() {
 
   for (auto i : pids_) {
     auto prc = getProcess(i);
+    prc->Update(true);
+  }
 
+  for (auto it = processes_.begin(); it != processes_.end();) {
+    if (!it->Update())
+      it = processes_.erase(it);
+    else
+      ++it;
+  }  
+
+
+  for (auto i : pids_) {
+    auto prc = getProcess(i);
     auto stat = LinuxParser::PidStat(i);
     long total_time =
         stol(stat[ProcessStates::utime]) + stol(stat[ProcessStates::stime]);
 
+    long utime_sec = stol(stat[ProcessStates::utime]) / hz;
+
+    prc->UpTime(utime_sec);
+    prc->SetRam();
     long uptime = LinuxParser::UpTime();
 
     long used_time = uptime - (stol(stat[ProcessStates::starttime]) / hz);
@@ -71,15 +87,8 @@ vector<Process>& System::Processes() {
     }
   }
 
-  for (auto it = processes_.begin(); it != processes_.end();) {
-    if (!it->Update())
-      it = processes_.erase(it);
-    else
-      ++it;
-  }
 
-  //   std::cout << "|" << processes_.back().IsNew()<< "|"<< processes_.size()
-  //   << std::endl;
+
   sort(processes_.begin(), processes_.end());
   return processes_;
 }

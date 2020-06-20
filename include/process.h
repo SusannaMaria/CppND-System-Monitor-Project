@@ -22,14 +22,18 @@ class Process {
   void IsNew(bool isnew);
   bool IsNew();
   void User(std::string uname);
-
-  // TODO: Declare any necessary private members
+  void UpTime(long utime);
+  void SetRam();
+    // TODO: Declare any necessary private members
  private:
+  std::string ram;
   int pid;
   bool isnew;
   bool update;
   std::string user;
   float cpu_utilization;
+  long utime;
+  std::string command;
 };
 
 #endif
