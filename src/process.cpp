@@ -1,3 +1,13 @@
+/**
+ * @file process.cpp
+ * @author Susanna Maria, David Silver
+ * @brief process handling impletionmenta
+ * @version 1.0
+ * @date 2020-06-21
+ *
+ * @copyright MIT License
+ * 
+ */
 #include "process.h"
 
 #include <unistd.h>

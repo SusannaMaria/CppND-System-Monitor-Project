@@ -1,3 +1,13 @@
+/**
+ * @file system.cpp
+ * @author Susanna Maria, David Silver
+ * @brief system handling impletionments
+ * @version 1.0
+ * @date 2020-06-21
+ *
+ * @copyright MIT License
+ *
+ */
 #include "system.h"
 
 #include <unistd.h>
@@ -19,10 +29,29 @@ using std::string;
 using std::vector;
 #include <unistd.h>
 
-// TODO: Return the system's CPU
+/**
+ * Constructor
+ *
+ */
+System::System() { LinuxParser::UserMap(users_); }
+
+/**
+ * Return the system's CPU
+ *
+ * @return Processor&
+ */
 Processor& System::Cpu() { return cpu_; }
 
-Process* System::getProcess(int pid) {
+/**
+ * Get process by pid
+ *
+ * This is an update function of an vector of processes
+ * implemented to reduce cpu load of monitor
+ *
+ * @param pid
+ * @return Process*
+ */
+Process* System::getProcess(int pid){
   for (unsigned i = 0; i < processes_.size(); i++) {
     if (processes_[i].Pid() == pid) {
       processes_[i].Update(true);
@@ -41,21 +70,31 @@ Process* System::getProcess(int pid) {
   return &processes_.back();
 }
 
-// TODO: Return a container composed of the system's processes
+/**
+ * Return a container composed of the system's processes
+ *
+ * @return vector<Process>&
+ */
 vector<Process>& System::Processes() {
   long hz = sysconf(_SC_CLK_TCK);
 
+  // get new list of current processes
   auto pids_ = LinuxParser::Pids();
 
+  // Set update state of all processes to false
   for (unsigned i = 0; i < processes_.size(); i++) {
     processes_[i].Update(false);
   }
 
+  // Update the current processes
   for (auto i : pids_) {
+    // Get a new process object or an already existing object
     auto prc = getProcess(i);
+    // Set update state to true
     prc->Update(true);
   }
 
+  // Remove processes from vector which are gone
   for (auto it = processes_.begin(); it != processes_.end();) {
     if (!it->Update())
       it = processes_.erase(it);
@@ -63,8 +102,10 @@ vector<Process>& System::Processes() {
       ++it;
   }
 
+  // Now update the remaining processes (fill the information on central place)
   for (auto i : pids_) {
     auto prc = getProcess(i);
+
     auto stat = LinuxParser::PidStat(i);
     long total_time =
         stol(stat[ProcessStates::utime]) + stol(stat[ProcessStates::stime]);
@@ -81,7 +122,6 @@ vector<Process>& System::Processes() {
       prc->CpuUtilization(0.0);
     } else {
       float cpu_utilization = ((float)total_time / (float)(used_time * hz));
-      prc->Update(true);
       prc->CpuUtilization(cpu_utilization);
     }
   }
@@ -90,22 +130,48 @@ vector<Process>& System::Processes() {
   return processes_;
 }
 
-// TODO: Return the system's kernel identifier (string)
-std::string System::Kernel() { return LinuxParser::Kernel(); }
+/**
+ * Return the system's kernel identifier (string)
+ *
+ * @return std::string
+ */
+std::string System::Kernel() const{ return LinuxParser::Kernel(); }
 
-// TODO: Return the system's memory utilization
-float System::MemoryUtilization() { return LinuxParser::MemoryUtilization(); }
+/**
+ * Return the system's memory utilization
+ *
+ * @return float
+ */
+float System::MemoryUtilization() const {
+  return LinuxParser::MemoryUtilization();
+}
 
-// TODO: Return the operating system name
-std::string System::OperatingSystem() { return LinuxParser::OperatingSystem(); }
+/**
+ * Return the operating system name
+ *
+ * @return std::string
+ */
+std::string System::OperatingSystem() const {
+  return LinuxParser::OperatingSystem();
+}
 
-// TODO: Return the number of processes actively running on the system
-int System::RunningProcesses() { return LinuxParser::RunningProcesses(); }
+/**
+ * Return the number of processes actively running on the system
+ *
+ * @return int
+ */
+int System::RunningProcesses() const { return LinuxParser::RunningProcesses(); }
 
-// TODO: Return the total number of processes on the system
-int System::TotalProcesses() { return LinuxParser::TotalProcesses(); }
+/**
+ * Return the total number of processes on the system
+ *
+ * @return int
+ */
+int System::TotalProcesses() const { return LinuxParser::TotalProcesses(); }
 
-// TODO: Return the number of seconds since the system started running
-long int System::UpTime() { return LinuxParser::UpTime(); }
-
-System::System() { LinuxParser::UserMap(users_); }
+/**
+ * Return the number of seconds since the system started running
+ *
+ * @return long int
+ */
+long int System::UpTime() const { return LinuxParser::UpTime(); }

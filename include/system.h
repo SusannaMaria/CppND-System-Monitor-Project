@@ -1,3 +1,14 @@
+/**
+ * @file system.h
+ * @author Susanna Maria, David Silver
+ * @brief Class definiiton of System object
+ * @version 1.0
+ * @date 2020-06-21
+ *
+ * @copyright MIT License
+ *
+ */
+
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
@@ -11,18 +22,17 @@
 class System {
  public:
   System();
-  Processor& Cpu();                   // TODO: See src/system.cpp
-  std::vector<Process>& Processes();  // TODO: See src/system.cpp
-  float MemoryUtilization();          // TODO: See src/system.cpp
-  long UpTime();                      // TODO: See src/system.cpp
-  int TotalProcesses();               // TODO: See src/system.cpp
-  int RunningProcesses();             // TODO: See src/system.cpp
-  std::string Kernel();               // TODO: See src/system.cpp
-  std::string OperatingSystem();      // TODO: See src/system.cpp
+  Processor& Cpu();
+  std::vector<Process>& Processes();
+  float MemoryUtilization() const;
+  long UpTime() const;
+  int TotalProcesses() const;
+  int RunningProcesses() const;
+  std::string Kernel() const;
+  std::string OperatingSystem() const;
 
   Process* getProcess(int pid);
 
-  // TODO: Define any necessary private members
  private:
   Processor cpu_ = {};
   std::vector<Process> processes_ = {};

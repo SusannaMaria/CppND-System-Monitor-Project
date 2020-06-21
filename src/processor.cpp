@@ -1,3 +1,13 @@
+/**
+ * @file processor.cpp
+ * @author Susanna Maria, David Silver
+ * @brief processor handling impletionments
+ * @version 1.0
+ * @date 2020-06-21
+ *
+ * @copyright MIT License
+ * 
+ */
 #include "processor.h"
 
 #include <iostream>
@@ -13,7 +23,11 @@ using std::string;
 using std::to_string;
 using std::unordered_map;
 
-// TODO: Return the aggregate CPU utilization
+/**
+ * Return the aggregate CPU utilization
+ * 
+ * @return float 
+ */
 float Processor::Utilization() {
   auto vecstr = LinuxParser::CpuUtilization();
 
