@@ -13,15 +13,15 @@
 #define SYSTEM_H
 
 #include <string>
-#include <unordered_map>
+
 #include <vector>
 
 #include "process.h"
-#include "processor.h"
+#include "processor.h" 
+#include "process_container.h"
 
 class System {
  public:
-  System();
   Processor& Cpu();
   std::vector<Process>& Processes();
   float MemoryUtilization() const;
@@ -31,13 +31,9 @@ class System {
   std::string Kernel() const;
   std::string OperatingSystem() const;
 
-  Process* getProcess(int pid);
-
  private:
   Processor cpu_ = {};
-  std::vector<Process> processes_ = {};
-  std::unordered_map<int, std::string> users_;
-  long hz;
+  ProcessContainer process_container_;
 };
 
 #endif
