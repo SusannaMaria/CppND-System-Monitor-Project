@@ -25,6 +25,7 @@ using std::set;
 using std::size_t;
 using std::string;
 using std::vector;
+using std::to_string;
 
 ProcessContainer::ProcessContainer() {
   this->hz = sysconf(_SC_CLK_TCK);
@@ -98,7 +99,15 @@ Process* ProcessContainer::getProcess(int pid) {
   LinuxParser::Uid(pid);
   const int uid = LinuxParser::Uid(pid);
   auto uptr = users_.find(uid);
-  string uname = uptr->second;
+  string uname;
+  //Finding 1# submission, what happens if uid not found in etc/passwd
+  if (uptr != users_.end()){
+    uname = uptr->second;
+  }else
+  {
+    uname = to_string(uid);
+  }
+
   newelement.User(uname);
   processes_.push_back(newelement);
   return &processes_.back();
