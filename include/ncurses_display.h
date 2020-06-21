@@ -1,3 +1,14 @@
+/**
+ * @file ncurses_display.h
+ * @author Susanna Maria, David Silver
+ * @brief Header of ui functions of monitor application
+ * @version 1.0
+ * @date 2020-06-21
+ *
+ * @copyright MIT License
+ * 
+ */
+
 #ifndef NCURSES_DISPLAY_H
 #define NCURSES_DISPLAY_H
 

@@ -72,7 +72,7 @@ vector<Process>& System::Processes() {
     long utime_sec = stol(stat[ProcessStates::utime]) / hz;
 
     prc->UpTime(utime_sec);
-    prc->SetRam();
+    prc->DetRam();
     long uptime = LinuxParser::UpTime();
 
     long used_time = uptime - (stol(stat[ProcessStates::starttime]) / hz);
