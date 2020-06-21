@@ -6,7 +6,7 @@
  * @date 2020-06-21
  *
  * @copyright MIT License
- * 
+ *
  */
 #include "processor.h"
 
@@ -25,8 +25,8 @@ using std::unordered_map;
 
 /**
  * Return the aggregate CPU utilization
- * 
- * @return float 
+ *
+ * @return float
  */
 float Processor::Utilization() {
   auto vecstr = LinuxParser::CpuUtilization();

@@ -30,7 +30,7 @@ namespace NCursesDisplay {
 WINDOW* system_window = nullptr;
 WINDOW* process_window = nullptr;
 bool resize_detected = true;
-}
+}  // namespace NCursesDisplay
 /**
  * 50 bars uniformly displayed from 0 - 100 %, 2% is one bar(|)
  *
@@ -131,15 +131,15 @@ void NCursesDisplay::DisplayProcesses(std::vector<Process>& processes,
 
 /**
  * Sinalhandler to deal resizing of terminal (will not work in debugger)
- * 
- * The actions because of resizing is in the main loop in NCursesDisplay::Display
- * Set only global variable here
- * 
+ *
+ * The actions because of resizing is in the main loop in
+ * NCursesDisplay::Display Set only global variable here
+ *
  * @param signal Not used
  */
-void NCursesDisplay::DoResize(int signal) { 
+void NCursesDisplay::DoResize(int signal) {
   UNUSED(signal);
-  resize_detected = true; 
+  resize_detected = true;
 }
 
 /**

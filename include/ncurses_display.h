@@ -6,7 +6,7 @@
  * @date 2020-06-21
  *
  * @copyright MIT License
- * 
+ *
  */
 
 #ifndef NCURSES_DISPLAY_H

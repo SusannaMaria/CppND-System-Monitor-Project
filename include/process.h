@@ -20,12 +20,12 @@ class Process {
  public:
   Process(int pid, long hz) : pid(pid), hz(hz), isnew(true), update(false){};
   int Pid() const;
-  std::string User() const;                      // TODO: See src/process.cpp
-  std::string Command();                   // TODO: See src/process.cpp
-  float CpuUtilization() const;                  // TODO: See src/process.cpp
-  std::string Ram() const;                       // TODO: See src/process.cpp
-  long int UpTime()const ;                       // TODO: See src/process.cpp
-  bool operator<(Process const& a) const;  // TODO: See src/process.cpp
+  std::string User() const;
+  std::string Command();
+  float CpuUtilization() const;
+  std::string Ram() const;
+  long int UpTime() const;
+  bool operator<(Process const& a) const;
   void Update(bool mode);
   bool Update() const;
   void CpuUtilization(float cpu_utilization);
@@ -34,7 +34,8 @@ class Process {
   void User(std::string uname);
   void UpTime(long utime);
   void DetRam();
-void PerformUpdate();
+  void PerformUpdate();
+
  private:
   std::string ram;
   int pid;
@@ -45,7 +46,6 @@ void PerformUpdate();
   float cpu_utilization;
   long utime;
   std::string command;
-
 };
 
 #endif

@@ -1,3 +1,14 @@
+/**
+ * @file process_container.cpp
+ * @author Susanna Maria
+ * @brief Implementation of Class which contains the logic to create and update
+ * the vector of processes
+ * @version 0.1
+ * @date 2020-06-21
+ *
+ * @copyright MIT License
+ *
+ */
 #include "process_container.h"
 
 #include <unistd.h>
@@ -25,11 +36,10 @@ ProcessContainer::ProcessContainer() {
  *
  * @return vector<Process>&
  */
-vector<Process>& ProcessContainer::Processes() { 
-    // We want to update the vector of processes everytime it is requested
-    UpdateProcesses();    
-    return processes_; 
-    
+vector<Process>& ProcessContainer::Processes() {
+  // We want to update the vector of processes everytime it is requested
+  UpdateProcesses();
+  return processes_;
 }
 
 void ProcessContainer::UpdateProcesses() {

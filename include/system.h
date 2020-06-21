@@ -13,12 +13,11 @@
 #define SYSTEM_H
 
 #include <string>
-
 #include <vector>
 
 #include "process.h"
-#include "processor.h" 
 #include "process_container.h"
+#include "processor.h"
 
 class System {
  public:

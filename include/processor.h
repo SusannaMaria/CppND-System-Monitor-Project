@@ -12,7 +12,7 @@
 #define PROCESSOR_H
 /**
  * Class Processor
- * 
+ *
  */
 class Processor {
  public:

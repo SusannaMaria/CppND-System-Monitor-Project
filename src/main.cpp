@@ -9,18 +9,17 @@
  */
 #include <signal.h>
 #include <termios.h>
+
 #include "ncurses_display.h"
 #include "system.h"
 
 int main() {
+  struct sigaction sa;
 
-    struct sigaction sa;
-
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-    sa.sa_handler = NCursesDisplay::DoResize;
-    if (sigaction(SIGWINCH, &sa, NULL) == -1)
-        exit(1);
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = 0;
+  sa.sa_handler = NCursesDisplay::DoResize;
+  if (sigaction(SIGWINCH, &sa, NULL) == -1) exit(1);
 
   System system;
   NCursesDisplay::Display(system);

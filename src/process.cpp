@@ -6,7 +6,7 @@
  * @date 2020-06-21
  *
  * @copyright MIT License
- * 
+ *
  */
 #include "process.h"
 
@@ -20,53 +20,53 @@
 #include "format.h"
 #include "linux_parser.h"
 
+using LinuxParser::ProcessStates;
 using std::string;
 using std::to_string;
 using std::vector;
-using LinuxParser::ProcessStates;
 
 /**
  * Return this process's ID
- * 
- * @return int 
+ *
+ * @return int
  */
-int Process::Pid() const{ return this->pid; }
+int Process::Pid() const { return this->pid; }
 
 /**
- * @brief 
- * 
- * @param uname 
+ * @brief
+ *
+ * @param uname
  */
 void Process::User(string uname) { this->user = uname; }
 
 /**
- * Return true if process is new registered 
- * 
- * @return true 
- * @return false 
+ * Return true if process is new registered
+ *
+ * @return true
+ * @return false
  */
 bool Process::IsNew() const { return this->isnew; }
 
 /**
  * Set process as not new
- * 
- * @param isnew 
+ *
+ * @param isnew
  */
 void Process::IsNew(bool isnew) { this->isnew = isnew; }
 
 /**
  * Return this process's CPU utilization
- * 
- * @return float 
+ *
+ * @return float
  */
-float Process::CpuUtilization() const{ return this->cpu_utilization; }
+float Process::CpuUtilization() const { return this->cpu_utilization; }
 
 /**
  * Return the command that generated this process
- * 
- * @return string 
+ *
+ * @return string
  */
-string Process::Command(){
+string Process::Command() {
   if (command.length() == 0) {
     this->command = LinuxParser::Command(this->pid);
   }
@@ -75,43 +75,43 @@ string Process::Command(){
 
 /**
  * Return this process's memory utilization
- * 
- * @return string 
+ *
+ * @return string
  */
 string Process::Ram() const { return this->ram; }
 
 /**
  * Determine process's memory utilization
- * 
+ *
  */
 void Process::DetRam() { this->ram = LinuxParser::Ram(this->pid); }
 
 /**
  * Return the user(name) that generated this process
- * 
- * @return string 
+ *
+ * @return string
  */
 string Process::User() const { return this->user; }
 
 /**
  * Process needs to be updated
- * 
- * @return true 
- * @return false 
+ *
+ * @return true
+ * @return false
  */
 bool Process::Update() const { return this->update; }
 
 /**
  * Set update state of process
- * 
- * @param mode 
+ *
+ * @param mode
  */
 void Process::Update(bool mode) { this->update = mode; }
 
 /**
  * Set cpu utilization of process
- * 
- * @param cpu_utilization 
+ *
+ * @param cpu_utilization
  */
 void Process::CpuUtilization(float cpu_utilization) {
   this->cpu_utilization = cpu_utilization;
@@ -119,17 +119,17 @@ void Process::CpuUtilization(float cpu_utilization) {
 
 /**
  * Return the age of this process (in seconds)
- * 
- * @return long int 
+ *
+ * @return long int
  */
-long int Process::UpTime() const{ return utime; }
+long int Process::UpTime() const { return utime; }
 
 /**
  * Overload the "less than" comparison operator for Process objects
- * 
+ *
  * @param a Second Process which will be compared
- * @return true 
- * @return false 
+ * @return true
+ * @return false
  */
 bool Process::operator<(Process const& a) const {
   return (this->cpu_utilization > a.cpu_utilization);
@@ -137,31 +137,28 @@ bool Process::operator<(Process const& a) const {
 
 /**
  * Set uptime of process
- * 
- * @param utime 
+ *
+ * @param utime
  */
 void Process::UpTime(long utime) { this->utime = utime; }
 
+void Process::PerformUpdate() {
+  auto stat = LinuxParser::PidStat(this->pid);
+  long total_time =
+      stol(stat[ProcessStates::utime]) + stol(stat[ProcessStates::stime]);
 
-void Process::PerformUpdate(){
+  long utime_sec = stol(stat[ProcessStates::utime]) / hz;
 
-    auto stat = LinuxParser::PidStat(this->pid);
-    long total_time =
-        stol(stat[ProcessStates::utime]) + stol(stat[ProcessStates::stime]);
+  this->UpTime(utime_sec);
+  this->DetRam();
+  long uptime = LinuxParser::UpTime();
 
-    long utime_sec = stol(stat[ProcessStates::utime]) / hz;
+  long used_time = uptime - (stol(stat[ProcessStates::starttime]) / hz);
 
-    this->UpTime(utime_sec);
-    this->DetRam();
-    long uptime = LinuxParser::UpTime();
-
-    long used_time = uptime - (stol(stat[ProcessStates::starttime]) / hz);
-
-    if (used_time <= 0) {
-      this->CpuUtilization(0.0);
-    } else {
-      float cpu_utilization = ((float)total_time / (float)(used_time * hz));
-      this->CpuUtilization(cpu_utilization);
-    }
-
+  if (used_time <= 0) {
+    this->CpuUtilization(0.0);
+  } else {
+    float cpu_utilization = ((float)total_time / (float)(used_time * hz));
+    this->CpuUtilization(cpu_utilization);
+  }
 }

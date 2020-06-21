@@ -1,3 +1,13 @@
+/**
+ * @file process_container.h
+ * @author Susanna Maria
+ * @brief Class to keep vector of Processes and thier logic to create and update
+ * @version 0.1
+ * @date 2020-06-21
+ *
+ * @copyright Copyright (c) 2020
+ *
+ */
 #ifndef PROCESS_CONTAINER_H
 #define PROCESS_CONTAINER_H
 
