@@ -1,11 +1,11 @@
 /**
  * @file linux_parser.cpp
- * @author your name (you@domain.com)
- * @brief
- * @version 0.1
+ * @author Susanna Maria, David Silver
+ * @brief Implementation of Linux Parser function 
+ * @version 1.0
  * @date 2020-06-21
- *
- * @copyright Copyright (c) 2020
+ * 
+ * @copyright MIT License
  *
  */
 #include "linux_parser.h"

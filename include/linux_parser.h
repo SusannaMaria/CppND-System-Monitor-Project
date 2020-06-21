@@ -1,4 +1,13 @@
-#ifndef SYSTEM_PARSER_H
+/**
+ * @file linux_parser.h
+ * @author Susanna Maria, David Silver
+ * @brief Header of Linux Parser function
+ * @version 1.0
+ * @date 2020-06-21
+ *
+ * @copyright MIT License
+ *
+ */
 #define SYSTEM_PARSER_H
 
 #include <fstream>
@@ -27,7 +36,10 @@ int RunningProcesses();
 std::string OperatingSystem();
 std::string Kernel();
 
-// CPU
+/**
+ * CPU Stats
+ *
+ */
 enum CPUStates {
   kUser_ = 0,
   kNice_,
@@ -41,6 +53,10 @@ enum CPUStates {
   kGuestNice_
 };
 
+/**
+ * Process Stats
+ *
+ */
 enum ProcessStates {
   pid = 0,
   comm,
@@ -94,7 +110,6 @@ long ActiveJiffies();
 long ActiveJiffies(int pid);
 long IdleJiffies();
 
-// Processes
 std::string Command(int pid);
 std::string Ram(int pid);
 int Uid(int pid);
