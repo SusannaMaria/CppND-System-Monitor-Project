@@ -1,20 +1,42 @@
+/**
+ * @file ncurses_display.cpp
+ * @author Susanna Maria, David Silver
+ * @brief Ncurses ui for monitor application
+ * @version 1.0
+ * @date 2020-06-21
+ *
+ * @copyright MIT License
+ *
+ */
 #include "ncurses_display.h"
 
 #include <curses.h>
 
 #include <chrono>
+#include <iostream>
 #include <string>
 #include <thread>
 #include <vector>
-#include <iostream>
+
 #include "format.h"
 #include "system.h"
 
 using std::string;
 using std::to_string;
 
-// 50 bars uniformly displayed from 0 - 100 %
-// 2% is one bar(|)
+#define UNUSED(expr) (void)(expr)
+
+namespace NCursesDisplay {
+WINDOW* system_window = nullptr;
+WINDOW* process_window = nullptr;
+bool resize_detected = true;
+}
+/**
+ * 50 bars uniformly displayed from 0 - 100 %, 2% is one bar(|)
+ *
+ * @param percent
+ * @return std::string
+ */
 std::string NCursesDisplay::ProgressBar(float percent) {
   std::string result{"0%"};
   int size{50};
@@ -30,6 +52,12 @@ std::string NCursesDisplay::ProgressBar(float percent) {
   return result + " " + display + "/100%";
 }
 
+/**
+ * Display System stats
+ *
+ * @param system
+ * @param window
+ */
 void NCursesDisplay::DisplaySystem(System& system, WINDOW* window) {
   int row{0};
   mvwprintw(window, ++row, 2, ("OS: " + system.OperatingSystem()).c_str());
@@ -54,6 +82,13 @@ void NCursesDisplay::DisplaySystem(System& system, WINDOW* window) {
   wrefresh(window);
 }
 
+/**
+ * Display stats of all processes
+ *
+ * @param processes
+ * @param window
+ * @param n
+ */
 void NCursesDisplay::DisplayProcesses(std::vector<Process>& processes,
                                       WINDOW* window, int n) {
   int row{0};
@@ -71,39 +106,84 @@ void NCursesDisplay::DisplayProcesses(std::vector<Process>& processes,
   mvwprintw(window, row, time_column, "TIME+");
   mvwprintw(window, row, command_column, "COMMAND");
   wattroff(window, COLOR_PAIR(2));
-  for (int i = 0; i < n; ++i) {
 
+  if (n > (int)processes.size()) {
+    n = processes.size();
+  }
+
+  for (int i = 0; i < n; ++i) {
     mvwprintw(window, ++row, pid_column, to_string(processes[i].Pid()).c_str());
-    mvwprintw(window, row, user_column, Format::padTo(processes[i].User(),cpu_column-user_column,' ').c_str());
+    mvwprintw(window, row, user_column,
+              Format::padTo(processes[i].User(), cpu_column - user_column, ' ')
+                  .c_str());
     float cpu = processes[i].CpuUtilization() * 100;
     mvwprintw(window, row, cpu_column, to_string(cpu).substr(0, 4).c_str());
     mvwprintw(window, row, ram_column, processes[i].Ram().c_str());
     mvwprintw(window, row, time_column,
               Format::ElapsedTime(processes[i].UpTime()).c_str());
-    
+
     mvwprintw(window, row, command_column,
-              Format::padTo(processes[i].Command(),window->_maxx - command_column,' ').c_str());
+              Format::padTo(processes[i].Command(),
+                            window->_maxx - command_column, ' ')
+                  .c_str());
   }
 }
 
-void NCursesDisplay::Display(System& system, int n) {
+/**
+ * Sinalhandler to deal resizing of terminal (will not work in debugger)
+ * 
+ * The actions because of resizing is in the main loop in NCursesDisplay::Display
+ * Set only global variable here
+ * 
+ * @param signal Not used
+ */
+void NCursesDisplay::DoResize(int signal) { 
+  UNUSED(signal);
+  resize_detected = true; 
+}
+
+/**
+ * Central loop of ncurses ui
+ *
+ * @param system
+ */
+void NCursesDisplay::Display(System& system) {
   initscr();      // start ncurses
   noecho();       // do not print input values
   cbreak();       // terminate ncurses on ctrl + c
   start_color();  // enable color
 
-  int x_max{getmaxx(stdscr)};
-  WINDOW* system_window = newwin(9, x_max - 1, 0, 0);
-  WINDOW* process_window =
-      newwin(3 + n, x_max - 1, system_window->_maxy + 1, 0);
+  int max_num_proc;
+  int y_max;
+  int x_max;
 
   while (1) {
+    if (resize_detected) {
+      endwin();
+      refresh();
+      clear();
+      if (system_window == nullptr) {
+        delete system_window;
+      }
+      if (process_window == nullptr) {
+        delete process_window;
+      }
+      y_max = getmaxy(stdscr);
+      x_max = getmaxx(stdscr);
+
+      system_window = newwin(9, x_max - 1, 0, 0);
+      process_window = newwin(y_max - (system_window->_maxy + 1), x_max - 1,
+                              system_window->_maxy + 1, 0);
+      resize_detected = false;
+      max_num_proc = process_window->_maxy - 2;
+    }
+
     init_pair(1, COLOR_BLUE, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
     box(system_window, 0, 0);
     box(process_window, 0, 0);
     DisplaySystem(system, system_window);
-    DisplayProcesses(system.Processes(), process_window, n);
+    DisplayProcesses(system.Processes(), process_window, max_num_proc);
     wrefresh(system_window);
     wrefresh(process_window);
     refresh();

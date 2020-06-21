@@ -61,8 +61,7 @@ vector<Process>& System::Processes() {
       it = processes_.erase(it);
     else
       ++it;
-  }  
-
+  }
 
   for (auto i : pids_) {
     auto prc = getProcess(i);
@@ -87,8 +86,6 @@ vector<Process>& System::Processes() {
     }
   }
 
-
-
   sort(processes_.begin(), processes_.end());
   return processes_;
 }
@@ -111,6 +108,4 @@ int System::TotalProcesses() { return LinuxParser::TotalProcesses(); }
 // TODO: Return the number of seconds since the system started running
 long int System::UpTime() { return LinuxParser::UpTime(); }
 
-System::System() {
-  LinuxParser::UserMap(users_);
-}
+System::System() { LinuxParser::UserMap(users_); }

@@ -24,7 +24,7 @@ class Process {
   void User(std::string uname);
   void UpTime(long utime);
   void SetRam();
-    // TODO: Declare any necessary private members
+  // TODO: Declare any necessary private members
  private:
   std::string ram;
   int pid;

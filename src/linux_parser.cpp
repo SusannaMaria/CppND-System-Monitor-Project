@@ -1,10 +1,10 @@
 /**
  * @file linux_parser.cpp
  * @author Susanna Maria, David Silver
- * @brief Implementation of Linux Parser function 
+ * @brief Implementation of Linux Parser function
  * @version 1.0
  * @date 2020-06-21
- * 
+ *
  * @copyright MIT License
  *
  */
@@ -227,7 +227,9 @@ string LinuxParser::Command(int pid) {
   string line;
   if (stream.is_open()) {
     std::getline(stream, line);
-    line.resize(line.size() - 1);
+    if (!line.empty()) {
+      line.resize(line.size() - 1);
+    }
     return line;
   }
   return "";
