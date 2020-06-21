@@ -14,6 +14,7 @@
 #include <fstream>
 #include <regex>
 #include <string>
+#include <unordered_map>
 
 namespace LinuxParser {
 // Paths
