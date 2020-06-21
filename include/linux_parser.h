@@ -112,7 +112,6 @@ std::string Ram(int pid);
 int Uid(int pid);
 std::string User(int pid);
 std::vector<std::string> PidStat(int pid);
-long int UpTime(int pid);
 void UserMap(std::unordered_map<int, std::string> &usermap);
 };  // namespace LinuxParser
 

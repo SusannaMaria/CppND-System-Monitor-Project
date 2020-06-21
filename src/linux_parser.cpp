@@ -294,14 +294,6 @@ int LinuxParser::Uid(int pid) {
   return 0;
 }
 
-/**
- * Read and return the uptime of a process
- *
- * @param pid
- * @return long
- */
-long LinuxParser::UpTime(int pid [[maybe_unused]]) { return 0; }
-
 /*
  * Central function which generates a vector of stats for a process
  *
