@@ -46,7 +46,9 @@ string Format::ElapsedTime(long uptime) {
   return ss.str();
 }
 
-void Format::padTo(std::string &str, const size_t num, const char paddingChar)
+std::string Format::padTo(const std::string str, const size_t num, const char paddingChar)
 {
-str.resize (num, paddingChar);
+  std::string result = str;
+  result.resize (num, paddingChar);
+  return result;
 }

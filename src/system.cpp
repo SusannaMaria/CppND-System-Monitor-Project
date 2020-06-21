@@ -36,7 +36,7 @@ Process* System::getProcess(int pid) {
   const int uid = LinuxParser::Uid(pid);
   auto uptr = users_.find(uid);
   string uname = uptr->second;
-  newelement.User(uname.substr(0, 6));
+  newelement.User(uname);
   processes_.push_back(newelement);
   return &processes_.back();
 }
@@ -113,6 +113,4 @@ long int System::UpTime() { return LinuxParser::UpTime(); }
 
 System::System() {
   LinuxParser::UserMap(users_);
-
-  std::cout << "dkfsj" << std::endl;
 }

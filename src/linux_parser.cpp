@@ -206,6 +206,7 @@ string LinuxParser::Command(int pid ) {
   string line;
   if (stream.is_open()) {
     std::getline(stream, line);
+    line.resize(line.size() - 1);
     return line;
   }
   return "";
@@ -264,10 +265,6 @@ int LinuxParser::Uid(int pid) {
   return 0;
 }
 
-// TODO: Read and return the user associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int pid [[maybe_unused]]) { return string(); }
-
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::UpTime(int pid [[maybe_unused]]) { return 0; }
@@ -306,7 +303,6 @@ void LinuxParser::UserMap(std::unordered_map<int, std::string>& usermap) {
       uid = stoi(linevec[2]);
       name = linevec[0];
       usermap[uid] = name;
-       std::cout << uid << "|" << name << std::endl;
     }
   }
 }

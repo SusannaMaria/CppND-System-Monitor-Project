@@ -30,7 +30,6 @@ float Process::CpuUtilization() { return this->cpu_utilization; }
 string Process::Command() { 
   if (command.length()==0){
     this->command = LinuxParser::Command(this->pid);
-    Format::padTo(this->command, 80,'.');
   }
   return this->command;
 
