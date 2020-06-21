@@ -37,6 +37,7 @@ class System {
   Processor cpu_ = {};
   std::vector<Process> processes_ = {};
   std::unordered_map<int, std::string> users_;
+  long hz;
 };
 
 #endif

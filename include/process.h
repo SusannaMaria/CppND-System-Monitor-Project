@@ -18,7 +18,7 @@
  */
 class Process {
  public:
-  Process(int pid) : pid(pid), isnew(true), update(false) {}
+  Process(int pid, long hz) : pid(pid), hz(hz), isnew(true), update(false){};
   int Pid() const;
   std::string User() const;                      // TODO: See src/process.cpp
   std::string Command();                   // TODO: See src/process.cpp
@@ -34,16 +34,18 @@ class Process {
   void User(std::string uname);
   void UpTime(long utime);
   void DetRam();
-
+void PerformUpdate();
  private:
   std::string ram;
   int pid;
+  long hz;
   bool isnew;
   bool update;
   std::string user;
   float cpu_utilization;
   long utime;
   std::string command;
+
 };
 
 #endif

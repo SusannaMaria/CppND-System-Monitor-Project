@@ -23,6 +23,7 @@
 using std::string;
 using std::to_string;
 using std::vector;
+using LinuxParser::ProcessStates;
 
 /**
  * Return this process's ID
@@ -140,3 +141,27 @@ bool Process::operator<(Process const& a) const {
  * @param utime 
  */
 void Process::UpTime(long utime) { this->utime = utime; }
+
+
+void Process::PerformUpdate(){
+
+    auto stat = LinuxParser::PidStat(this->pid);
+    long total_time =
+        stol(stat[ProcessStates::utime]) + stol(stat[ProcessStates::stime]);
+
+    long utime_sec = stol(stat[ProcessStates::utime]) / hz;
+
+    this->UpTime(utime_sec);
+    this->DetRam();
+    long uptime = LinuxParser::UpTime();
+
+    long used_time = uptime - (stol(stat[ProcessStates::starttime]) / hz);
+
+    if (used_time <= 0) {
+      this->CpuUtilization(0.0);
+    } else {
+      float cpu_utilization = ((float)total_time / (float)(used_time * hz));
+      this->CpuUtilization(cpu_utilization);
+    }
+
+}

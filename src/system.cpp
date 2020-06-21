@@ -33,7 +33,10 @@ using std::vector;
  * Constructor
  *
  */
-System::System() { LinuxParser::UserMap(users_); }
+System::System() {
+  LinuxParser::UserMap(users_);
+  this->hz = sysconf(_SC_CLK_TCK);
+}
 
 /**
  * Return the system's CPU
@@ -51,7 +54,7 @@ Processor& System::Cpu() { return cpu_; }
  * @param pid
  * @return Process*
  */
-Process* System::getProcess(int pid){
+Process* System::getProcess(int pid) {
   for (unsigned i = 0; i < processes_.size(); i++) {
     if (processes_[i].Pid() == pid) {
       processes_[i].Update(true);
@@ -60,7 +63,7 @@ Process* System::getProcess(int pid){
       return ptr;
     }
   }
-  Process newelement = Process(pid);
+  Process newelement = Process(pid, hz);
   LinuxParser::Uid(pid);
   const int uid = LinuxParser::Uid(pid);
   auto uptr = users_.find(uid);
@@ -76,8 +79,6 @@ Process* System::getProcess(int pid){
  * @return vector<Process>&
  */
 vector<Process>& System::Processes() {
-  long hz = sysconf(_SC_CLK_TCK);
-
   // get new list of current processes
   auto pids_ = LinuxParser::Pids();
 
@@ -105,25 +106,7 @@ vector<Process>& System::Processes() {
   // Now update the remaining processes (fill the information on central place)
   for (auto i : pids_) {
     auto prc = getProcess(i);
-
-    auto stat = LinuxParser::PidStat(i);
-    long total_time =
-        stol(stat[ProcessStates::utime]) + stol(stat[ProcessStates::stime]);
-
-    long utime_sec = stol(stat[ProcessStates::utime]) / hz;
-
-    prc->UpTime(utime_sec);
-    prc->DetRam();
-    long uptime = LinuxParser::UpTime();
-
-    long used_time = uptime - (stol(stat[ProcessStates::starttime]) / hz);
-
-    if (used_time <= 0) {
-      prc->CpuUtilization(0.0);
-    } else {
-      float cpu_utilization = ((float)total_time / (float)(used_time * hz));
-      prc->CpuUtilization(cpu_utilization);
-    }
+    prc->PerformUpdate();
   }
 
   sort(processes_.begin(), processes_.end());
@@ -135,7 +118,7 @@ vector<Process>& System::Processes() {
  *
  * @return std::string
  */
-std::string System::Kernel() const{ return LinuxParser::Kernel(); }
+std::string System::Kernel() const { return LinuxParser::Kernel(); }
 
 /**
  * Return the system's memory utilization
