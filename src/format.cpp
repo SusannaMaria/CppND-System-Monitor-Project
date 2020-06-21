@@ -1,3 +1,13 @@
+/**
+ * @file format.cpp
+ * @author Susanna Maria, David Silver
+ * @brief Implementation of Helper function to print out Strings of monitor in NCurses UI
+ * @version 1.0
+ * @date 2020-06-21
+ * 
+ * @copyright MIT License
+ * 
+ */
 #include "format.h"
 
 #include <iomanip>
